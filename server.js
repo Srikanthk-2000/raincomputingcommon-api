@@ -270,89 +270,89 @@ const create = async () => {
       console.log("user disconnected", reason);
     });
   });
-  const sourceMongoConnectionString = "mongodb://common:go8JfN0GBH9RCe05HMA2NPywPTs5cseCYDkXIrXcCL4sIdjX2GIivTkA6qcS4bZb1tIAOra61qojACDbmZQXGQ==@common.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@common@";
-  async function replicateData() {
-    try {
-      // Connect to the source MongoDB
-      const targetCosmosConnections = [
-        {
-          connectionString: "mongodb://raincomputingcosmosdb:tBYDpH68hIKiWL1dd72FlUV7m8tn3rqy6OV0fVWDSuzvSJ8XtovbzRP6bG4xMPKIwfTCHHr2AIveACDbx3ff6w%3D%3D@raincomputingcosmosdb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@raincomputingcosmosdb@",
-          // targetDatabaseName: "raincomputingcosmosdb",
-          targetContainerName: "usermodels",
-        },
-        {
-          connectionString: "mongodb://rc-sub-cosmodb:xe0LHri9s9zKzPvBJMwPkzdqS8nxb2TN2bxfLElLbyJ6ZawnVELB4RnKmKP9pVpntWDQsdfXJIJOACDb56botw==@rc-sub-cosmodb.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@rc-sub-cosmodb@",
-          // targetDatabaseName: "raincomputingcosmosdb",
-          targetContainerName: "usermodels",
-        },
-      ];
-      const sourceMongoClient = new MongoClient(sourceMongoConnectionString);
-      // const sourcecosmosClient = new MongoClient(targetCosmosConnections[0].connectionString);
-      console.log("start1");
-      await sourceMongoClient.connect();
-      const sourceMongoDb = sourceMongoClient.db();
-      // await sourcecosmosClient.connect();
-      // const sourceCosmosDb = sourcecosmosClient.db();
-      console.log("start2");
-      console.log("cosmosClient", targetCosmosConnections);
-   for (const targetCosmosConnection of targetCosmosConnections) {
-      const targetCosmosClient = new MongoClient(targetCosmosConnection.connectionString);
-      await targetCosmosClient.connect();
-      const targetCosmosDb = targetCosmosClient.db();
-      // Fetch user data from the source MongoDB
-      const sourceCollection = targetCosmosDb.collection("usermodels");
-      const userData = await sourceCollection.find({}).toArray();
-      const alldata = await userModel.find({});
-      // Find users from userData that exist in alldata but are missing in userModel
-      const missingUsers = userData.filter((user) => !alldata.some((existingUser) => existingUser._id.toString() === user._id.toString()));;
-      console.log("missingUsers", missingUsers);
-      // Insert missing data into the target Cosmos DB
-      for (const user of missingUsers) {
-        await userModel.create(user);
-        console.log(`Replicated missing user data with _id ${user._id} to target Cosmos DB`);
-      }
-      for (const user of userData) {
-      const existingUser = alldata.find((existingUser) => existingUser._id.toString() === user._id.toString());
-        if (existingUser) {
-          // Update existing user in the userModel with data from userData
-          await userModel.updateOne({ _id: existingUser._id }, { $set: user });
-        }
-      }
-      // Fetch user data from the source MongoDB
-      const sourceAttorneyCollection = targetCosmosDb.collection("regattorneys");
-      const attorneyData = await sourceAttorneyCollection.find({}).toArray();
-      const allattorney = await RegAttorneyModel.find({});
-      // Find users from userData that exist in alldata but are missing in userModel
-      const missingAttorney = attorneyData.filter((user) => !allattorney.some((existingUser) => existingUser._id.toString() === user._id.toString()));;
-      // console.log("attorneyData", attorneyData);
-      // console.log("missingAttorney", missingAttorney);
-      // console.log("allattorney", allattorney);
-      // Insert missing data into the target Cosmos DB
-      for (const attorney of missingAttorney) {
-        await RegAttorneyModel.create(attorney);
-        console.log(`Replicated missing user data with _id ${attorney._id} to target Cosmos DB`);
-      }
-      for (const attorney of attorneyData) {
-      const existingUser = allattorney.find((existingUser) => existingUser._id.toString() === attorney._id.toString());
-        if (existingUser) {
-          // Update existing user in the userModel with data from userData
-          await RegAttorneyModel.updateOne({ _id: existingUser._id }, { $set: attorney });
-        }
-      }
-//       const allAttorney = allattorney.filter((user) => !attorneyData.some((existingUser) => existingUser._id.toString() === user._id.toString()));
-// console.log("allAttorney",allAttorney)
-// const targetAttorneyCollection = targetCosmosDb.collection("regattorneys");
-      // Insert missing data into the target Cosmos DB for this target connection
-    }
-      // Close connections
-      sourceMongoClient.close();
-    } catch (error) {
-      console.error(`Error replicating data: ${error.message}`);
-    }
-  }
-  // Set up a cron job to run the replication process every 10 minutes
-  cron.schedule("*/10 * * * * *", replicateData);
-  console.log("Replication job scheduled to run every 10 minutes.");
+//   const sourceMongoConnectionString = "mongodb://common:go8JfN0GBH9RCe05HMA2NPywPTs5cseCYDkXIrXcCL4sIdjX2GIivTkA6qcS4bZb1tIAOra61qojACDbmZQXGQ==@common.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@common@";
+//   async function replicateData() {
+//     try {
+//       // Connect to the source MongoDB
+//       const targetCosmosConnections = [
+//         {
+//           connectionString: "mongodb://raincomputingcosmosdb:tBYDpH68hIKiWL1dd72FlUV7m8tn3rqy6OV0fVWDSuzvSJ8XtovbzRP6bG4xMPKIwfTCHHr2AIveACDbx3ff6w%3D%3D@raincomputingcosmosdb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@raincomputingcosmosdb@",
+//           // targetDatabaseName: "raincomputingcosmosdb",
+//           targetContainerName: "usermodels",
+//         },
+//         {
+//           connectionString: "mongodb://rc-sub-cosmodb:xe0LHri9s9zKzPvBJMwPkzdqS8nxb2TN2bxfLElLbyJ6ZawnVELB4RnKmKP9pVpntWDQsdfXJIJOACDb56botw==@rc-sub-cosmodb.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@rc-sub-cosmodb@",
+//           // targetDatabaseName: "raincomputingcosmosdb",
+//           targetContainerName: "usermodels",
+//         },
+//       ];
+//       const sourceMongoClient = new MongoClient(sourceMongoConnectionString);
+//       // const sourcecosmosClient = new MongoClient(targetCosmosConnections[0].connectionString);
+//       console.log("start1");
+//       await sourceMongoClient.connect();
+//       const sourceMongoDb = sourceMongoClient.db();
+//       // await sourcecosmosClient.connect();
+//       // const sourceCosmosDb = sourcecosmosClient.db();
+//       console.log("start2");
+//       console.log("cosmosClient", targetCosmosConnections);
+//    for (const targetCosmosConnection of targetCosmosConnections) {
+//       const targetCosmosClient = new MongoClient(targetCosmosConnection.connectionString);
+//       await targetCosmosClient.connect();
+//       const targetCosmosDb = targetCosmosClient.db();
+//       // Fetch user data from the source MongoDB
+//       const sourceCollection = targetCosmosDb.collection("usermodels");
+//       const userData = await sourceCollection.find({}).toArray();
+//       const alldata = await userModel.find({});
+//       // Find users from userData that exist in alldata but are missing in userModel
+//       const missingUsers = userData.filter((user) => !alldata.some((existingUser) => existingUser._id.toString() === user._id.toString()));;
+//       console.log("missingUsers", missingUsers);
+//       // Insert missing data into the target Cosmos DB
+//       for (const user of missingUsers) {
+//         await userModel.create(user);
+//         console.log(`Replicated missing user data with _id ${user._id} to target Cosmos DB`);
+//       }
+//       for (const user of userData) {
+//       const existingUser = alldata.find((existingUser) => existingUser._id.toString() === user._id.toString());
+//         if (existingUser) {
+//           // Update existing user in the userModel with data from userData
+//           await userModel.updateOne({ _id: existingUser._id }, { $set: user });
+//         }
+//       }
+//       // Fetch user data from the source MongoDB
+//       const sourceAttorneyCollection = targetCosmosDb.collection("regattorneys");
+//       const attorneyData = await sourceAttorneyCollection.find({}).toArray();
+//       const allattorney = await RegAttorneyModel.find({});
+//       // Find users from userData that exist in alldata but are missing in userModel
+//       const missingAttorney = attorneyData.filter((user) => !allattorney.some((existingUser) => existingUser._id.toString() === user._id.toString()));;
+//       // console.log("attorneyData", attorneyData);
+//       // console.log("missingAttorney", missingAttorney);
+//       // console.log("allattorney", allattorney);
+//       // Insert missing data into the target Cosmos DB
+//       for (const attorney of missingAttorney) {
+//         await RegAttorneyModel.create(attorney);
+//         console.log(`Replicated missing user data with _id ${attorney._id} to target Cosmos DB`);
+//       }
+//       for (const attorney of attorneyData) {
+//       const existingUser = allattorney.find((existingUser) => existingUser._id.toString() === attorney._id.toString());
+//         if (existingUser) {
+//           // Update existing user in the userModel with data from userData
+//           await RegAttorneyModel.updateOne({ _id: existingUser._id }, { $set: attorney });
+//         }
+//       }
+// //       const allAttorney = allattorney.filter((user) => !attorneyData.some((existingUser) => existingUser._id.toString() === user._id.toString()));
+// // console.log("allAttorney",allAttorney)
+// // const targetAttorneyCollection = targetCosmosDb.collection("regattorneys");
+//       // Insert missing data into the target Cosmos DB for this target connection
+//     }
+//       // Close connections
+//       sourceMongoClient.close();
+//     } catch (error) {
+//       console.error(`Error replicating data: ${error.message}`);
+//     }
+//   }
+//   // Set up a cron job to run the replication process every 10 minutes
+//   cron.schedule("*/10 * * * * *", replicateData);
+//   console.log("Replication job scheduled to run every 10 minutes.");
   //Scheduling msg
   cron.schedule("30 22 * * *", () => {
     if (offlineUsers?.length > 0) {
