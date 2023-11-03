@@ -1,7 +1,7 @@
 const { uuidv4 } = require("uuid");
 const server = require("./server");
 
-const port = 5000;
+const port = 8080;
 process.on("exit", function () {
   console.log("db disconnected");
   mongoose.disconnect();
