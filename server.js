@@ -18,7 +18,8 @@ const UserModel = require("./models/userModel");
 const { sendMail } = require("./services/mail.services");
 const Message = require("./models/Message");
 const userModel = require("./models/userModel");
-const {MongoClient} = require("mongodb")
+const {MongoClient} = require("mongodb");
+const RegAttorneyModel = require("./models/RegAttorneyModel");
 const io = new Server(server, {
   cors: {
     origin: "*",
