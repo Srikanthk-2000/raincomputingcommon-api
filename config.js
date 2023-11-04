@@ -4,7 +4,7 @@ const config = {
     "mongodb://common:go8JfN0GBH9RCe05HMA2NPywPTs5cseCYDkXIrXcCL4sIdjX2GIivTkA6qcS4bZb1tIAOra61qojACDbmZQXGQ==@common.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@common@",
     
       JWT_SECRET: "dev",
-    PORT: 5000,
+    PORT: 8080,
     MAIL_SERVICE: "gmail",
     SENDER_MAIL: "rpmongotest@gmail.com",
     MAIL_PASSWORD: "hspbrzryscrtuqqf",
